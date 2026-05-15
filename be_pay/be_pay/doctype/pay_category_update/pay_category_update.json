@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-14 14:08:22.958839",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pay_exchange_rate",
+  "column_break_gi3dn",
+  "pay_last_rate_date",
+  "pay_categories_section",
+  "pay_category",
+  "pay_initial_category",
+  "column_break_dooe1",
+  "pay_status",
+  "pay_is_initial",
+  "section_break_uww0y",
+  "pay_base",
+  "column_break_rdgrk",
+  "pay_transport",
+  "column_break_vjfuf",
+  "pay_housing",
+  "column_break_duvf2",
+  "pay_allowance",
+  "pay_updated_categories_section",
+  "pay_updated_categories"
+ ],
+ "fields": [
+  {
+   "fieldname": "pay_exchange_rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Exchange Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_gi3dn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_last_rate_date",
+   "fieldtype": "Date",
+   "label": "Last Rate Date"
+  },
+  {
+   "fieldname": "pay_categories_section",
+   "fieldtype": "Section Break",
+   "label": "Categories"
+  },
+  {
+   "fieldname": "pay_category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "Pay Category"
+  },
+  {
+   "fieldname": "pay_initial_category",
+   "fieldtype": "Data",
+   "label": "Initial Category",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_dooe1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nIn Progress\nNew"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.pay_status == 'New'",
+   "fieldname": "pay_is_initial",
+   "fieldtype": "Check",
+   "label": "Is Initial"
+  },
+  {
+   "fieldname": "section_break_uww0y",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "pay_base",
+   "fieldtype": "Float",
+   "label": "Base",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rdgrk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_transport",
+   "fieldtype": "Float",
+   "label": "Transport",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_vjfuf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_housing",
+   "fieldtype": "Float",
+   "label": "Housing",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_duvf2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pay_allowance",
+   "fieldtype": "Float",
+   "label": "Allowance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pay_updated_categories_section",
+   "fieldtype": "Section Break",
+   "label": "Updated Categories"
+  },
+  {
+   "fieldname": "pay_updated_categories",
+   "fieldtype": "Table",
+   "label": "Updated Categories",
+   "options": "Pay Updated Category"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-05-14 14:08:22.958839",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Category Update",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

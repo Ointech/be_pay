@@ -1,0 +1,83 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:26:01.974587",
+  "name": "MANŒUVRE ORDINAIRE",
+  "pay_days": 14.0,
+  "pay_number": 7.0,
+  "pay_position": "MANŒUVRE ORDINAIRE"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.270706",
+  "name": "MANŒUVRE LOURD",
+  "pay_days": 14.0,
+  "pay_number": 7.0,
+  "pay_position": "MANŒUVRE LOURD"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.304549",
+  "name": "TRAVAILLEUR SPECIALISE",
+  "pay_days": 14.0,
+  "pay_number": 7.0,
+  "pay_position": "TRAVAILLEUR SPECIALISE"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.311277",
+  "name": "TRAVAILLEUR SEMI QUALIFIE",
+  "pay_days": 14.0,
+  "pay_number": 7.0,
+  "pay_position": "TRAVAILLEUR SEMI QUALIFIE"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.320236",
+  "name": "TRAVAILLEUR QUALIFIE",
+  "pay_days": 14.0,
+  "pay_number": 7.0,
+  "pay_position": "TRAVAILLEUR QUALIFIE"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.326005",
+  "name": "TRAVAILLEUR HAUTEMENT QUALIFIE",
+  "pay_days": 14.0,
+  "pay_number": 7.0,
+  "pay_position": "TRAVAILLEUR HAUTEMENT QUALIFIE"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.333911",
+  "name": "MAITRISES",
+  "pay_days": 26.0,
+  "pay_number": 9.0,
+  "pay_position": "MAITRISES"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.339383",
+  "name": "CADRE DE COLLABORATION",
+  "pay_days": 78.0,
+  "pay_number": 16.0,
+  "pay_position": "CADRE DE COLLABORATION"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Pay Position Category",
+  "modified": "2026-05-14 21:29:23.343960",
+  "name": "CADRE DE DIRECTION",
+  "pay_days": 78.0,
+  "pay_number": 16.0,
+  "pay_position": "CADRE DE DIRECTION"
+ }
+]

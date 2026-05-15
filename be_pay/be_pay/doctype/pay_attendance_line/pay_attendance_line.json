@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "autoincrement",
+ "creation": "2026-05-14 14:08:00.431980",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "employee_name",
+  "pay_absence",
+  "pay_sunday_hours",
+  "pay_hours_30",
+  "pay_hours_60",
+  "pay_night_hours"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pay_absence",
+   "fieldtype": "Float",
+   "label": "Absence"
+  },
+  {
+   "fieldname": "pay_sunday_hours",
+   "fieldtype": "Float",
+   "label": "Sunday Hours"
+  },
+  {
+   "fieldname": "pay_hours_30",
+   "fieldtype": "Float",
+   "label": "Hours 30"
+  },
+  {
+   "fieldname": "pay_hours_60",
+   "fieldtype": "Float",
+   "label": "Hours 60"
+  },
+  {
+   "fieldname": "pay_night_hours",
+   "fieldtype": "Float",
+   "label": "Night Hours"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-14 14:08:00.431980",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Attendance Line",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

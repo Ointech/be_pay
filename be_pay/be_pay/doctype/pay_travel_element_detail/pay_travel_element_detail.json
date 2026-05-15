@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2026-05-14 14:08:26.931912",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pay_code",
+  "pay_name",
+  "pay_element_de_voyage",
+  "pay_available",
+  "pay_in_progress",
+  "pay_used",
+  "pay_remaining"
+ ],
+ "fields": [
+  {
+   "fieldname": "pay_code",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Code",
+   "options": "Pay Dependent"
+  },
+  {
+   "fieldname": "pay_name",
+   "fieldtype": "Data",
+   "label": "Name"
+  },
+  {
+   "fieldname": "pay_element_de_voyage",
+   "fieldtype": "Link",
+   "label": "Element De Voyage",
+   "options": "Pay Travel Element"
+  },
+  {
+   "fieldname": "pay_available",
+   "fieldtype": "Int",
+   "label": "Available"
+  },
+  {
+   "fieldname": "pay_in_progress",
+   "fieldtype": "Int",
+   "label": "In Progress"
+  },
+  {
+   "fieldname": "pay_used",
+   "fieldtype": "Int",
+   "label": "Used"
+  },
+  {
+   "fieldname": "pay_remaining",
+   "fieldtype": "Int",
+   "label": "Remaining"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-14 14:08:26.931912",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Travel Element Detail",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

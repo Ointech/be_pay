@@ -1,0 +1,98 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-14 09:10:38.534288",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "working_day",
+  "working_hours_per_day",
+  "column_break_fexnh",
+  "pay_seniority_in_years",
+  "pay_multiple_salary_in_period",
+  "pay_employee_checking",
+  "pay_bonus_in_separate_slip",
+  "pay_automatic_seniority",
+  "pay_full_enqueue"
+ ],
+ "fields": [
+  {
+   "fieldname": "column_break_fexnh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_seniority_in_years",
+   "fieldtype": "Check",
+   "label": "Seniority in Years"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_multiple_salary_in_period",
+   "fieldtype": "Check",
+   "label": "Multiple Salary in Period"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_employee_checking",
+   "fieldtype": "Check",
+   "label": "Employee Checking"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_bonus_in_separate_slip",
+   "fieldtype": "Check",
+   "label": "Yearly Bonus in Separate Slip"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_automatic_seniority",
+   "fieldtype": "Check",
+   "label": "Automatic Seniority"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_full_enqueue",
+   "fieldtype": "Check",
+   "label": "Full Enqueue"
+  },
+  {
+   "fieldname": "working_day",
+   "fieldtype": "Float",
+   "label": "Working Day"
+  },
+  {
+   "default": "8",
+   "fieldname": "working_hours_per_day",
+   "fieldtype": "Float",
+   "label": "Working Hours per Day"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-05-14 22:05:24.702908",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Payroll Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

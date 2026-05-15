@@ -1,0 +1,108 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-14 14:08:21.826160",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pay_enabled",
+  "pay_server_name",
+  "pay_staff",
+  "pay_url_base",
+  "pay_token",
+  "pay_username",
+  "pay_password",
+  "column_break_interval",
+  "pay_interval_value",
+  "pay_interval_unit",
+  "pay_last_run"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "pay_enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "pay_server_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Server Name"
+  },
+  {
+   "fieldname": "pay_staff",
+   "fieldtype": "Link",
+   "label": "Staff",
+   "options": "Employment Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pay_url_base",
+   "fieldtype": "Data",
+   "label": "URL Base",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pay_token",
+   "fieldtype": "Long Text",
+   "label": "Token",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pay_username",
+   "fieldtype": "Data",
+   "label": "Username",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pay_password",
+   "fieldtype": "Password",
+   "label": "Password",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_interval",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "60",
+   "fieldname": "pay_interval_value",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Interval Value"
+  },
+  {
+   "default": "Minutes",
+   "fieldname": "pay_interval_unit",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Interval Unit",
+   "options": "Minutes\nHours"
+  },
+  {
+   "fieldname": "pay_last_run",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Last Run"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-14 14:08:21.826160",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Attendance Retrieval Server",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

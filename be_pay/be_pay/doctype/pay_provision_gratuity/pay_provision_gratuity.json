@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-14 14:08:25.929240",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee",
+  "pay_report",
+  "pay_january",
+  "pay_february",
+  "pay_march",
+  "pay_april",
+  "pay_may",
+  "pay_june",
+  "pay_july",
+  "pay_august",
+  "pay_september",
+  "pay_october",
+  "pay_november",
+  "pay_december",
+  "pay_taken",
+  "pay_total"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee",
+   "fieldtype": "Data",
+   "label": "Employee"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_report",
+   "fieldtype": "Float",
+   "label": "Report"
+  },
+  {
+   "fieldname": "pay_january",
+   "fieldtype": "Float",
+   "label": "January"
+  },
+  {
+   "fieldname": "pay_february",
+   "fieldtype": "Float",
+   "label": "February"
+  },
+  {
+   "fieldname": "pay_march",
+   "fieldtype": "Float",
+   "label": "March"
+  },
+  {
+   "fieldname": "pay_april",
+   "fieldtype": "Float",
+   "label": "April"
+  },
+  {
+   "fieldname": "pay_may",
+   "fieldtype": "Float",
+   "label": "May"
+  },
+  {
+   "fieldname": "pay_june",
+   "fieldtype": "Float",
+   "label": "June"
+  },
+  {
+   "fieldname": "pay_july",
+   "fieldtype": "Float",
+   "label": "July"
+  },
+  {
+   "fieldname": "pay_august",
+   "fieldtype": "Float",
+   "label": "August"
+  },
+  {
+   "fieldname": "pay_september",
+   "fieldtype": "Float",
+   "label": "September"
+  },
+  {
+   "fieldname": "pay_october",
+   "fieldtype": "Float",
+   "label": "October"
+  },
+  {
+   "fieldname": "pay_november",
+   "fieldtype": "Float",
+   "label": "November"
+  },
+  {
+   "fieldname": "pay_december",
+   "fieldtype": "Float",
+   "label": "December"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_taken",
+   "fieldtype": "Float",
+   "label": "Taken"
+  },
+  {
+   "fieldname": "pay_total",
+   "fieldtype": "Float",
+   "label": "Total"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-14 14:08:25.929240",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Provision Gratuity",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

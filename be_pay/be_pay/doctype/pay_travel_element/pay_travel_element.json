@@ -1,0 +1,81 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:pay_element_name",
+ "creation": "2026-05-14 14:08:26.607852",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pay_element_name",
+  "pay_quantity_per_year",
+  "column_break_3",
+  "pay_is_carry_forward",
+  "pay_allow_negative",
+  "pay_allow_over_allocation"
+ ],
+ "fields": [
+  {
+   "fieldname": "pay_element_name",
+   "fieldtype": "Data",
+   "label": "Element Name",
+   "unique": 1
+  },
+  {
+   "fieldname": "pay_quantity_per_year",
+   "fieldtype": "Data",
+   "label": "Quantity per Year"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_is_carry_forward",
+   "fieldtype": "Check",
+   "label": "Is Carry Forward"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_allow_negative",
+   "fieldtype": "Check",
+   "label": "Allow Negative Balance"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_allow_over_allocation",
+   "fieldtype": "Check",
+   "label": "Allow Over Allocation"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-05-14 14:08:26.607852",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Travel Element",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

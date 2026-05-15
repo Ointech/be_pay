@@ -1,0 +1,70 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "pay_category",
+  "pay_base",
+  "pay_transport",
+  "pay_housing",
+  "pay_allowance"
+ ],
+ "fields": [
+  {
+   "fieldname": "pay_category",
+   "fieldtype": "Data",
+   "label": "Category",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "pay_base",
+   "fieldtype": "Float",
+   "label": "Base",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "pay_transport",
+   "fieldtype": "Float",
+   "label": "Transport",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "pay_housing",
+   "fieldtype": "Float",
+   "label": "Housing",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "pay_allowance",
+   "fieldtype": "Float",
+   "label": "Allowance",
+   "in_list_view": 1
+  }
+ ],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Updated Category",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "istable": 1,
+ "editable_grid": 1
+}

@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{YY}PROV{###}",
+ "creation": "2026-05-14 09:10:38.600026",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fiscal_year",
+  "column_break_oyelb",
+  "pay_secondary_calendar",
+  "section_break_xblxy",
+  "start_date",
+  "employment_type",
+  "pay_first_start",
+  "pay_second_start",
+  "column_break_hiksf",
+  "end_date",
+  "leave_type",
+  "pay_first_end",
+  "pay_second_end",
+  "section_break_j868h",
+  "pay_ratio",
+  "tab_break_wrmci",
+  "pay_leave",
+  "tab_break_wavtr",
+  "pay_gratuity_amount",
+  "tab_break_ki6qa",
+  "pay_ticket",
+  "tab_break_yeabz",
+  "pay_bonus_amount",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "fiscal_year",
+   "fieldtype": "Link",
+   "label": "Fiscal Year",
+   "options": "Fiscal Year"
+  },
+  {
+   "fieldname": "column_break_oyelb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "pay_secondary_calendar",
+   "fieldtype": "Check",
+   "label": "Secondary Calendar"
+  },
+  {
+   "fieldname": "section_break_xblxy",
+   "fieldtype": "Section Break",
+   "hide_border": 1
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "employment_type",
+   "fieldtype": "Link",
+   "label": "Employment Type",
+   "options": "Employment Type"
+  },
+  {
+   "fieldname": "pay_first_start",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "First Start"
+  },
+  {
+   "fieldname": "pay_second_start",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Second Start"
+  },
+  {
+   "fieldname": "column_break_hiksf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "end_date",
+   "fieldtype": "Date",
+   "label": "End Date"
+  },
+  {
+   "fieldname": "leave_type",
+   "fieldtype": "Link",
+   "label": "Leave Type",
+   "options": "Leave Type"
+  },
+  {
+   "fieldname": "pay_first_end",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "First End"
+  },
+  {
+   "fieldname": "pay_second_end",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Second End"
+  },
+  {
+   "fieldname": "section_break_j868h",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "pay_ratio",
+   "fieldtype": "Table",
+   "label": "Ratio",
+   "options": "Pay Provision Ratio"
+  },
+  {
+   "fieldname": "tab_break_wrmci",
+   "fieldtype": "Tab Break",
+   "label": "Conge"
+  },
+  {
+   "fieldname": "pay_leave",
+   "fieldtype": "Table",
+   "options": "Pay Provision Leave"
+  },
+  {
+   "fieldname": "tab_break_wavtr",
+   "fieldtype": "Tab Break",
+   "label": "Gratification"
+  },
+  {
+   "fieldname": "pay_gratuity_amount",
+   "fieldtype": "Table",
+   "options": "Pay Provision Gratuity"
+  },
+  {
+   "fieldname": "tab_break_ki6qa",
+   "fieldtype": "Tab Break",
+   "label": "Ticket"
+  },
+  {
+   "fieldname": "pay_ticket",
+   "fieldtype": "Table",
+   "options": "Pay Provision Ticket"
+  },
+  {
+   "fieldname": "tab_break_yeabz",
+   "fieldtype": "Tab Break",
+   "label": "Bonus"
+  },
+  {
+   "fieldname": "pay_bonus_amount",
+   "fieldtype": "Table",
+   "options": "Pay Provision Bonus"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pay Provision",
+   "print_hide": 1,
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-14 09:10:38.600026",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Provision",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

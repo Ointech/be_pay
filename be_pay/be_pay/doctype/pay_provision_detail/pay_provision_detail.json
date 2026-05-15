@@ -1,0 +1,131 @@
+{
+ "actions": [],
+ "creation": "2026-05-14 14:09:18.960276",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pay_year",
+  "pay_month",
+  "pay_period_date_begin",
+  "pay_period_date_end",
+  "pay_date_join",
+  "pay_date_begin",
+  "pay_date_end",
+  "pay_date_quit",
+  "employee",
+  "pay_new_rate",
+  "pay_period_days",
+  "pay_rate",
+  "pay_salary",
+  "pay_start_period_days",
+  "pay_years_difference",
+  "pay_year_div_5",
+  "pay_category"
+ ],
+ "fields": [
+  {
+   "fieldname": "pay_year",
+   "fieldtype": "Data",
+   "label": "Year"
+  },
+  {
+   "fieldname": "pay_month",
+   "fieldtype": "Data",
+   "label": "Month"
+  },
+  {
+   "fieldname": "pay_period_date_begin",
+   "fieldtype": "Date",
+   "label": "Period Date Begin"
+  },
+  {
+   "fieldname": "pay_period_date_end",
+   "fieldtype": "Date",
+   "label": "Period Date End"
+  },
+  {
+   "fieldname": "pay_date_join",
+   "fieldtype": "Date",
+   "label": "Date Join"
+  },
+  {
+   "fieldname": "pay_date_begin",
+   "fieldtype": "Date",
+   "label": "Date Begin"
+  },
+  {
+   "fieldname": "pay_date_end",
+   "fieldtype": "Date",
+   "label": "Date End"
+  },
+  {
+   "fieldname": "pay_date_quit",
+   "fieldtype": "Date",
+   "label": "Date Quit"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "pay_new_rate",
+   "fieldtype": "Float",
+   "label": "New Rate"
+  },
+  {
+   "fieldname": "pay_period_days",
+   "fieldtype": "Int",
+   "label": "Period Days"
+  },
+  {
+   "fieldname": "pay_rate",
+   "fieldtype": "Float",
+   "label": "Rate"
+  },
+  {
+   "fieldname": "pay_salary",
+   "fieldtype": "Currency",
+   "label": "Salary"
+  },
+  {
+   "fieldname": "pay_start_period_days",
+   "fieldtype": "Int",
+   "label": "Start Period Days"
+  },
+  {
+   "fieldname": "pay_years_difference",
+   "fieldtype": "Int",
+   "label": "Years Difference"
+  },
+  {
+   "fieldname": "pay_year_div_5",
+   "fieldtype": "Int",
+   "label": "Year Div 5"
+  },
+  {
+   "fieldname": "pay_category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "Pay Employee Category Detail"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-14 14:09:18.960276",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Provision Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
