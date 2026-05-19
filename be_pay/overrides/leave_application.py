@@ -10,6 +10,7 @@ automatique des enregistrements de présence.
 
 import frappe
 from frappe import _
+from frappe.utils import getdate, flt
 from hrms.hr.doctype.leave_application.leave_application import LeaveApplication
 
 
@@ -30,14 +31,132 @@ class CustomLeaveApplication(LeaveApplication):
         Avant soumission : recalcul des jours de congé.
         """
         self._be_pay_calculate_leave_days()
-        super().before_submit()
+        # LeaveApplication (HRMS) ne définit pas before_submit ; inutile d'appeler super()
+
+    def before_save(self):
+        """
+        Avant sauvegarde : calcul du montant cash_collecté depuis les provisions.
+        """
+        # Initialiser amount à 0 pour éviter les erreurs si non calculé
+        self.amount = 0.0
+
+        if self.get("cash_collected"):
+            total_jours = 0.0
+            montant = 0.0
+
+            prov_jours = frappe.db.sql(
+                """
+                SELECT r.pay_total
+                FROM `tabPay Provision` p
+                INNER JOIN `tabPay Provision Ratio` r ON p.name = r.parent
+                WHERE r.employee = %(employee)s
+                  AND YEAR(p.end_date) = %(fiscal_year)s
+                """,
+                {
+                    "fiscal_year": int(getdate(self.to_date).year),
+                    "employee": self.employee,
+                },
+                as_dict=1,
+            )
+            if prov_jours:
+                total_jours = flt(prov_jours[0].pay_total)
+
+                prov_montant = frappe.db.sql(
+                    """
+                    SELECT r.pay_total
+                    FROM `tabPay Provision` p
+                    INNER JOIN `tabPay Provision Leave` r ON p.name = r.parent
+                    WHERE r.employee = %(employee)s
+                      AND YEAR(p.end_date) = %(fiscal_year)s
+                    """,
+                    {
+                        "fiscal_year": int(getdate(self.to_date).year),
+                        "employee": self.employee,
+                    },
+                    as_dict=1,
+                )
+                if prov_montant:
+                    montant = flt(prov_montant[0].pay_total)
+
+                if total_jours > 0:
+                    if self.total_leave_days <= total_jours:
+                        self.amount = self.total_leave_days / total_jours * montant
+                    else:
+                        self.amount = montant
+
+        # LeaveApplication (HRMS) ne définit pas before_save ; inutile d'appeler super()
 
     def on_submit(self):
         """
-        Après soumission : création automatique des attendances.
+        Après soumission : création automatique des attendances + mise à jour provisions.
         """
         self._be_pay_create_attendance_records()
+        self._be_pay_update_provisions_on_submit()
         super().on_submit()
+
+    def update_attendance(self):
+        """
+        Be Pay gère déjà la création des présences dans on_submit.
+        On override cette méthode pour éviter les doublons et les conflits.
+        """
+        pass
+
+    def on_cancel(self):
+        """
+        Annulation : restauration des provisions.
+        """
+        self._be_pay_update_provisions_on_cancel()
+        super().on_cancel()
+
+    def _be_pay_update_provisions_on_submit(self):
+        """Décrémente les provisions au submit de la demande de congé."""
+        frappe.db.sql(
+            """
+            UPDATE `tabPay Provision Ratio` r
+            INNER JOIN `tabPay Provision` p ON p.name = r.parent
+            SET r.pay_taken = r.pay_taken + %(pris)s,
+                r.pay_total = r.pay_total - %(pris)s
+            WHERE r.employee = %(employee)s
+              AND %(to_date)s BETWEEN p.start_date AND p.end_date
+            """,
+            {"pris": int(self.total_leave_days), "employee": self.employee, "to_date": self.to_date},
+        )
+        frappe.db.sql(
+            """
+            UPDATE `tabPay Provision Leave` r
+            INNER JOIN `tabPay Provision` p ON p.name = r.parent
+            SET r.pay_taken = r.pay_taken + %(pris)s,
+                r.pay_total = r.pay_total - %(pris)s
+            WHERE r.employee = %(employee)s
+              AND %(to_date)s BETWEEN p.start_date AND p.end_date
+            """,
+            {"pris": flt(self.get("amount", 0)), "employee": self.employee, "to_date": self.to_date},
+        )
+
+    def _be_pay_update_provisions_on_cancel(self):
+        """Restaure les provisions à l'annulation de la demande de congé."""
+        frappe.db.sql(
+            """
+            UPDATE `tabPay Provision Ratio` r
+            INNER JOIN `tabPay Provision` p ON p.name = r.parent
+            SET r.pay_taken = r.pay_taken - %(pris)s,
+                r.pay_total = r.pay_total + %(pris)s
+            WHERE r.employee = %(employee)s
+              AND %(to_date)s BETWEEN p.start_date AND p.end_date
+            """,
+            {"pris": int(self.total_leave_days), "employee": self.employee, "to_date": self.to_date},
+        )
+        frappe.db.sql(
+            """
+            UPDATE `tabPay Provision Leave` r
+            INNER JOIN `tabPay Provision` p ON p.name = r.parent
+            SET r.pay_taken = r.pay_taken - %(pris)s,
+                r.pay_total = r.pay_total + %(pris)s
+            WHERE r.employee = %(employee)s
+              AND %(to_date)s BETWEEN p.start_date AND p.end_date
+            """,
+            {"pris": flt(self.get("amount", 0)), "employee": self.employee, "to_date": self.to_date},
+        )
 
     def _be_pay_calculate_leave_days(self):
         """
@@ -75,7 +194,7 @@ class CustomLeaveApplication(LeaveApplication):
         attendance_records = []
 
         while current_date <= to_date:
-            # Vérifier s'il y a un jour férié
+            # Vérifier s'il y a un jour férié (weekly off)
             holiday_results = frappe.db.sql(
                 """
                 SELECT * FROM `tabHoliday`
@@ -84,6 +203,11 @@ class CustomLeaveApplication(LeaveApplication):
                 (current_date,),
                 as_dict=True
             )
+
+            # Ne pas créer d'attendance pour les jours fériés (weekly off)
+            if holiday_results:
+                current_date = frappe.utils.add_days(current_date, 1)
+                continue
 
             # Vérifier si un attendance existe déjà
             attendance_exists = frappe.db.sql(

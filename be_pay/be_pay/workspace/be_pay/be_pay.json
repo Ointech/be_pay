@@ -3,7 +3,12 @@
  "charts": [],
  "content": "[{\"id\":\"ODv2FoWdVR\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Welcome to the Be Pay workspace</span>\",\"col\":12}},{\"id\":\"FXuUbnd-qa\",\"type\":\"paragraph\",\"data\":{\"text\":\"Click on \\n\\t\\t\\t\\n\\t\\t\\t\\n\\t\\t to edit\",\"col\":12}},{\"id\":\"ZcP-DXAhb6\",\"type\":\"card\",\"data\":{\"card_name\":\"General Payroll Settings\",\"col\":3}},{\"id\":\"9twx-9dgki\",\"type\":\"card\",\"data\":{\"card_name\":\"Provision\",\"col\":3}}]",
  "creation": "2026-05-14 11:31:12.855929",
- "custom_blocks": [],
+ "custom_blocks": [
+  {
+   "custom_block_name": "Dash Pay",
+   "label": "Dash Pay"
+  }
+ ],
  "docstatus": 0,
  "doctype": "Workspace",
  "hide_custom": 0,
@@ -25,9 +30,29 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Accrued Leave Provision",
+   "label": "Pay Leave Seniority BonusPay Leave Seniority Bonus",
    "link_count": 0,
-   "link_to": "Pay Provision",
+   "link_to": "Pay Leave Seniority Bonus",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pay Settings Leave Accrual",
+   "link_count": 0,
+   "link_to": "Pay Settings Leave Accrual",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "ay Provision Cumul",
+   "link_count": 0,
+   "link_to": "Pay Provision Cumul",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -38,6 +63,16 @@
    "label": "Bonus Provision",
    "link_count": 0,
    "link_to": "Pay Bonus Provision",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Provision",
+   "link_count": 0,
+   "link_to": "Pay Provision",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -132,7 +167,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-05-14 22:04:18.530655",
+ "modified": "2026-05-19 23:05:59.839621",
  "modified_by": "Administrator",
  "module": "Be Pay",
  "name": "Be Pay",

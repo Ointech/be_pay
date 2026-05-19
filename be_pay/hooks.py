@@ -86,7 +86,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "be_pay.install.before_install"
-# after_install = "be_pay.install.after_install"
+after_install = "be_pay.install.after_install"
 
 # Uninstallation
 # ------------
@@ -261,6 +261,7 @@ app_license = "mit"
 # Override standard doctype classes
 override_doctype_class = {
     "Employee": "be_pay.overrides.employee.CustomEmployee",
+    "Salary Component": "be_pay.overrides.salary_component.CustomSalaryComponent",
     "Salary Slip": "be_pay.overrides.salary_slip.CustomSalarySlip",
     "Leave Application": "be_pay.overrides.leave_application.CustomLeaveApplication",
     "Loan": "be_pay.overrides.loan.CustomLoan",
@@ -268,6 +269,8 @@ override_doctype_class = {
     "Employee Checkin": "be_pay.overrides.employee_checkin.CustomEmployeeCheckin",
     "Item": "be_pay.overrides.item.CustomItem",
     "Leave Allocation": "be_pay.overrides.leave_allocation.CustomLeaveAllocation",
+    "Payroll Period": "be_pay.overrides.payroll_period.CustomPayrollPeriod",
+    "Payroll Entry": "be_pay.overrides.payroll_entry.CustomPayrollEntry",
 }
 
 # --- BEGIN AUTO-GENERATED ---
@@ -312,6 +315,7 @@ doctype_js = {
     "Loan": "public/js/loan.js",
     "Loan Type": "public/js/loan_type.js",
     "Salary Slip": "public/js/salary_slip.js",
+    "Payroll Entry": "public/js/payroll_entry.js",
 }
 
 override_whitelisted_methods = {

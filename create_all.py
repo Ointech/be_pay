@@ -298,7 +298,6 @@ FIELDNAME_MAP_CUSTOM = {
     "date_naissance": "pay_birth_date",
     "current_anciennete": "pay_current_seniority",
     "new_anciennete": "pay_new_seniority",
-    "scondary_calendar": "pay_secondary_calendar",
     "first_start": "pay_first_start",
     "second_start": "pay_second_start",
     "first_end": "pay_first_end",

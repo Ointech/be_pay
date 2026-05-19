@@ -1,318 +1,249 @@
-// // --- Script for Employee - Gestion des dépendants ---
-// frappe.ui.form.on('Employee', {
-//     refresh: function(frm) {
-//         if (frm.doc.dependant && frm.doc.dependant.length <= 0) {
-//             frm.get_field('dependant').grid.cannot_add_rows = true;
-//         } else {
-//             frm.get_field('dependant').grid.cannot_add_rows = false;
-//         }
-        
-//         if (frm.doc.dependant && frm.doc.dependant.length > 0) {
-//             var first_row = frm.doc.dependant[0];
-//             if (first_row) {
-//                 frappe.model.set_value(first_row.doctype, first_row.name, 'code', first_row.code);
-//                 frappe.model.set_value(first_row.doctype, first_row.name, 'type', first_row.type);
-//                 frappe.model.set_value(first_row.doctype, first_row.name, 'nom_complet', first_row.nom_complet);
-//                 frm.refresh_field('dependant');
-//             }
-//         }
-//     },
-    
-//     after_save: function(frm) {
-//         if (frm.doc.dependant && frm.doc.dependant.length <= 0) {
-//             frm.events.get_employee_dependant(frm);
-//         }
-//     },
-    
-//     get_employee_dependant: function(frm) {
-//         return frappe.call({
-//             method: 'paie.override.employee.get_employee_dependant',
-//             args: {
-//                 "emp_name": frm.doc.name,
-//             },
-//             callback: function(r) {
-//                 if (r.message) {
-//                     var row = frm.add_child('dependant');
-//                     row.code = r.message.employee;
-//                     row.type = 'Employee';
-//                     row.nom_complet = r.message.employee_name;
-//                     row.date_naissance = r.message.date_of_birth;
-//                     frm.refresh_field('dependant');
-//                     frm.dirty();
-//                 }
-//             }
-//         });
-//     }
-// });
+frappe.ui.form.on('Employee', {
+    onload(frm) {
+        // Initialise salairy_old avec le CTC actuel pour éviter
+        // une fausse détection de changement à la première sauvegarde.
+        if (!frm.doc.salairy_old && frm.doc.ctc) {
+            frm.set_value('salairy_old', frm.doc.ctc);
+        }
+    },
 
-// // --- Script for Employee - Dependant removal ---
-// frappe.ui.form.on('Dependent', {
-//     before_dependant_remove: function(frm, cdt, cdn) {
-//         var row = locals[cdt][cdn];
-//         if (row.idx == 1) {
-//             frappe.throw(__("Employee cannot be removed"));
-//         }
-//     },
-    
-//     type: function(frm, cdt, cdn) {
-//         var row = locals[cdt][cdn];
-//         if (row.idx != 1 && row.type == "Employee") {
-//             frappe.throw(__("Cannot select 'Employee'!!!"));
-//         }
-//     }
-// });
+    refresh(frm) {
+        category_by(frm);
+        update_family_details(frm);
+        add_provision_buttons(frm);
+    },
 
-// // --- Script for Employee - Category details ---
-// frappe.ui.form.on('Employee', {
-//     employee_category_details: function(frm) {
-//         if (!frm.doc.employee_category_details) return;
-        
-//         frappe.db.get_doc("Pay Employee Category Detail", frm.doc.employee_category_details).then(r => {
-//             frm.set_value('conge_days', r.conge_days);
-//             frm.set_value('basic_salary_per_day', r.pay_basic_salary_per_day);
-//             frm.set_value('basic_salary_per_hour', r.basic_salary_per_hour);
-//             frm.set_value('logement', r.pay_housing);
-//             frm.set_value('transport', r.pay_transport);
-//             frm.set_value('conge_days_final_settlement', r.conge_days_final_settlement);
-//             frm.set_value('conge_year_final_settlement', r.conge_year_final_settlement);
-//             frm.dirty();
-//             frm.refresh();
-//         });
-//     }
-// });
+    ctc(frm) {
+        category_by(frm);
+    },
 
-// // --- Script for Employee - Contrat Projet ---
-// frappe.ui.form.on('Employee', {
-//     refresh: function(frm) {
-//         // if (!frm.is_new() && frm.doc.employee) {
-//         //     frappe.db.get_value("Contrat Projet", {'parent': frm.doc.employee}, "code_projet", (r) => {
-//         //         if (r && r.code_projet) {
-//         //             frm.set_value('code_projet', r.code_projet);
-//         //         }
-//         //     });
-//         // }
-//     },
-    
-//     before_save: function(frm) {
-//         if (!frm.doc.custom_idgo4hr && frm.doc.custom_contrat_projet && frm.doc.custom_contrat_projet.length > 0) {
-//             var date_ajuste = frappe.datetime.get_today();
-//             var child_row = frm.doc.custom_contrat_projet[frm.doc.custom_contrat_projet.length - 1];
-            
-//             if (child_row) {
-//                 frm.set_value('department', child_row.code_projet);
-//                 frm.set_value('scheduled_confirmation_date', child_row.date_debut);
-//                 frm.set_value('contract_end_date', child_row.date_fin);
-//                 frm.set_value('projet', child_row.code_projet);
-//                 frm.set_value('date_entree', child_row.date_debut);
-//                 frm.set_value('date_actuelle', date_ajuste);
-//             }
-//         }
-//     }
-// });
+    employee_category_detail(frm) {
+        category_by(frm);
+    }
+});
 
-// // --- Script for Employee - Départ ---
-// frappe.ui.form.on('Employee', {
-//     depart: function(frm) {
-//         if (frm.doc.anciennete) {
-//             let preavis_et_anciennete = Math.ceil(frm.doc.anciennete / 2);
-//             frm.set_value('preavis_et_anciennete', preavis_et_anciennete);
-//         }
-//     }
-// });
 
-// // --- Script for Employee - Provision ---
-// frappe.ui.form.on('Employee', {
-//     refresh: function(frm) {
-//         if (frm.is_new()) return;
-        
-//         frm.add_custom_button(
-//             __("Provision"),
-//             function() {
-//                 let d = new frappe.ui.Dialog({
-//                     title: 'Mise à jour Provision',
-//                     fields: [
-//                         {
-//                             label: 'Fiscal Year',
-//                             fieldname: 'fiscal_year',
-//                             fieldtype: 'Link',
-//                             options: "Fiscal Year",
-//                             on_change: function() {
-//                                 let fiscal_year = d.get_value('fiscal_year');
-//                                 if (fiscal_year) {
-//                                     frappe.db.get_doc("Fiscal Year", fiscal_year).then(r => {
-//                                         d.set_value('debut', r.start_date);
-//                                         d.set_value('fin', r.end_date);
-//                                     });
-//                                 }
-//                             }
-//                         },
-//                         {
-//                             label: 'Leave Type',
-//                             fieldname: 'leave_type',
-//                             fieldtype: 'Link',
-//                             options: 'Leave Type',
-//                             get_query: function() {
-//                                 return {
-//                                     filters: {
-//                                         'is_on_provision': 1
-//                                     }
-//                                 };
-//                             }
-//                         }
-//                     ],
-//                     primary_action_label: __('Mettre à jour'),
-//                     primary_action: function(values) {
-//                         if (!values.fiscal_year || !values.leave_type) {
-//                             frappe.msgprint(__("Please select both Fiscal Year and Leave Type"));
-//                             return;
-//                         }
-                        
-//                         frappe.call({
-//                             method: "fleuve_congo_custom.fleuve_congo_custom.doctype.provision.provision.update_provision_details",
-//                             args: {
-//                                 fiscal_year: values.fiscal_year,
-//                                 leave_type: values.leave_type,
-//                                 emp_name: frm.doc.name,
-//                                 employment_type: frm.doc.employment_type,
-//                             },
-//                             callback: function(r) {
-//                                 if (r && !r.exc) {
-//                                     frappe.msgprint(__("Provision Mise à Jour effectuée avec succès"));
-//                                 }
-//                             }
-//                         });
-//                         d.hide();
-//                     }
-//                 });
-//                 d.show();
-//             },
-//             __("Actions")
-//         );
-//     }
-// });
+function add_provision_buttons(frm) {
+    if (frm.is_new()) return;
 
-// // --- Script for Employee - Salaire et catégorie ---
-// frappe.ui.form.on('Employee', {
-//     onload: function(frm) {
-//         frm.set_value('salaire_old', frm.doc.salaire_de_base);
-//         frm.set_value('employee_category_old', frm.doc.employee_category_details);
-//     },
-    
-//     before_save: function(frm) {
-//         if (!frm.doc.salaire_de_base || frm.doc.salaire_de_base <= 0) {
-//             return;
-//         }
-        
-//         var salaireBase = frm.doc.salaire_de_base / 26;
-//         var salaireMoyen = salaireBase;
-//         var categorie_true;
-        
-//         // Détermination de la catégorie basée sur le salaire moyen
-//         if (salaireMoyen <= 5) {
-//             categorie_true = "MAO1-1.I";
-//         } else if (salaireMoyen > 5 && salaireMoyen <= 5.8) {
-//             categorie_true = "MAL1-2.I";
-//         } else if (salaireMoyen > 5.8 && salaireMoyen <= 6.65) {
-//             categorie_true = "TSP0-3.II";
-//         } else if (salaireMoyen > 6.65 && salaireMoyen <= 7.7) {
-//             categorie_true = "TSQ1-4.III";
-//         } else if (salaireMoyen > 7.7 && salaireMoyen <= 8.9) {
-//             categorie_true = "TSQ2-5.III";
-//         } else if (salaireMoyen > 8.9 && salaireMoyen <= 10.3) {
-//             categorie_true = "TSQ3-6.III";
-//         } else if (salaireMoyen > 10.3 && salaireMoyen <= 11.85) {
-//             categorie_true = "TRQ1-7.IV";
-//         } else if (salaireMoyen > 11.85 && salaireMoyen <= 13.7) {
-//             categorie_true = "TRQ2-8.IV";
-//         } else if (salaireMoyen > 13.7 && salaireMoyen <= 15.85) {
-//             categorie_true = "THQ0-9.V";
-//         } else if (salaireMoyen > 15.85 && salaireMoyen <= 18.30) {
-//             categorie_true = "MAT1-10.M";
-//         } else if (salaireMoyen > 18.3 && salaireMoyen <= 21.10) {
-//             categorie_true = "MAT2-11.M";
-//         } else if (salaireMoyen > 21.1 && salaireMoyen <= 24.4) {
-//             categorie_true = "MAT3-12.M";
-//         } else if (salaireMoyen > 24.4 && salaireMoyen <= 28.2) {
-//             categorie_true = "MAT4-13.M";
-//         } else if (salaireMoyen > 28.2 && salaireMoyen <= 32.55) {
-//             categorie_true = "CAC1-14.CC";
-//         } else if (salaireMoyen > 32.55 && salaireMoyen <= 37.6) {
-//             categorie_true = "CAC2-15.CC";
-//         } else if (salaireMoyen > 37.6 && salaireMoyen <= 43.4) {
-//             categorie_true = "CAC3-16.CC";
-//         } else if (salaireMoyen > 43.4 && salaireMoyen <= 50) {
-//             categorie_true = "CAC4-17.CC";
-//         } else {
-//             categorie_true = "CAD";
-//         }
-        
-//         var categorie = categorie_true;
-//         var salaire = frm.doc.salaire_de_base;
-//         var date_ajuste = frappe.datetime.get_today();
-        
-//         // Calcul de la date de paie
-//         var date_pay = frm.events.calculate_pay_date(frm, date_ajuste);
-        
-//         // Gestion du tableau salaire_employee
-//         if (!frm.doc.salaire_old) {
-//             if (frm.doc.salaire_de_base > 0) {
-//                 frm.set_value('salaire_old', frm.doc.salaire_de_base);
-//                 var child = frm.add_child('salaire_employee');
-//                 frappe.model.set_value(child.doctype, child.name, 'date_ajuste', date_ajuste);
-//                 frappe.model.set_value(child.doctype, child.name, 'categorie', categorie);
-//                 frappe.model.set_value(child.doctype, child.name, 'salaire', salaire);
-//                 frappe.model.set_value(child.doctype, child.name, 'date_debut', date_pay);
-//                 frm.refresh_field('salaire_employee');
-//             }
-//         } else {
-//             if (frm.doc.salaire_employee && frm.doc.salaire_employee.length > 0) {
-//                 var child_row = frm.doc.salaire_employee[frm.doc.salaire_employee.length - 1];
-                
-//                 if (frm.doc.salaire_de_base != frm.doc.salaire_old) {
-//                     // Mettre à jour la date de fin de la dernière entrée
-//                     var today = new Date();
-//                     today.setDate(today.getDate() - 1);
-//                     var year = today.getFullYear();
-//                     var month = ('0' + (today.getMonth() + 1)).slice(-2);
-//                     var day = ('0' + today.getDate()).slice(-2);
-//                     var date_fin = year + '-' + month + '-' + day;
-                    
-//                     frappe.model.set_value(child_row.doctype, child_row.name, 'date_fin', date_fin);
-                    
-//                     // Ajouter nouvelle entrée
-//                     frm.set_value('salaire_old', frm.doc.salaire_de_base);
-//                     var new_child = frm.add_child('salaire_employee');
-//                     frappe.model.set_value(new_child.doctype, new_child.name, 'date_ajuste', date_ajuste);
-//                     frappe.model.set_value(new_child.doctype, new_child.name, 'categorie', categorie);
-//                     frappe.model.set_value(new_child.doctype, new_child.name, 'salaire', salaire);
-//                     frappe.model.set_value(new_child.doctype, new_child.name, 'date_debut', date_pay);
-//                     frm.refresh_field('salaire_employee');
-//                 }
-//             } else {
-//                 // Ajouter première entrée
-//                 var new_child = frm.add_child('salaire_employee');
-//                 frappe.model.set_value(new_child.doctype, new_child.name, 'date_ajuste', date_ajuste);
-//                 frappe.model.set_value(new_child.doctype, new_child.name, 'categorie', categorie);
-//                 frappe.model.set_value(new_child.doctype, new_child.name, 'salaire', salaire);
-//                 frappe.model.set_value(new_child.doctype, new_child.name, 'date_debut', date_pay);
-//                 frm.refresh_field('salaire_employee');
-//             }
-//         }
-//     },
-    
-//     calculate_pay_date: function(frm, date_ajuste) {
-//         var date_joining = new Date(date_ajuste);
-//         var year = date_joining.getFullYear();
-//         var month = date_joining.getMonth() + 1;
-//         var day = date_joining.getDate();
-//         var date_pay = year + '-' + ('0' + month).slice(-2) + '-' + day;
-        
-//         if (frm.doc.employment_type === 'Nationaux') {
-//             date_pay = year + '-' + ('0' + month).slice(-2) + '-' + '21';
-//         } else if (frm.doc.employment_type === 'Expatriés') {
-//             date_pay = year + '-' + ('0' + month).slice(-2) + '-' + '01';
-//         }
-        
-//         return date_pay;
-//     }
-// });
+    // Bouton : Mettre à jour Provision
+    frm.add_custom_button(__('Provision'), function () {
+        let d = new frappe.ui.Dialog({
+            title: __('Mise à jour Provision'),
+            fields: [
+                {
+                    label: __('Fiscal Year'),
+                    fieldname: 'fiscal_year',
+                    fieldtype: 'Link',
+                    options: 'Fiscal Year',
+                    reqd: 1
+                },
+                {
+                    label: __('Leave Type'),
+                    fieldname: 'leave_type',
+                    fieldtype: 'Link',
+                    options: 'Leave Type',
+                    reqd: 1,
+                    get_query: () => {
+                        return {
+                            filters: { is_on_provision: 1 }
+                        };
+                    }
+                }
+            ],
+            primary_action_label: __('Mettre à jour'),
+            primary_action(values) {
+                frappe.call({
+                    method: 'be_pay.be_pay.doctype.pay_provision.pay_provision.update_provision_for_employee',
+                    args: {
+                        fiscal_year: values.fiscal_year,
+                        leave_type: values.leave_type,
+                        emp_name: frm.doc.name,
+                    },
+                    callback: function (r) {
+                        if (!r.exc) {
+                            frappe.msgprint(__('Provision mise à jour'));
+                        }
+                    }
+                });
+                d.hide();
+            }
+        });
+        d.show();
+    }, __('Actions'));
+
+    // Bouton : Initialiser Provision
+    frm.add_custom_button(__('Initialiser Provision'), function () {
+        let d = new frappe.ui.Dialog({
+            title: __('Initialisation Provision'),
+            fields: [
+                {
+                    label: __('Fiscal Year'),
+                    fieldname: 'fiscal_year',
+                    fieldtype: 'Link',
+                    options: 'Fiscal Year',
+                    reqd: 1
+                }
+            ],
+            primary_action_label: __('Initialiser'),
+            primary_action(values) {
+                frappe.call({
+                    method: 'be_pay.be_pay.doctype.pay_provision.pay_provision.init_provision_for_employee',
+                    args: {
+                        fiscal_year: values.fiscal_year,
+                        emp_name: frm.doc.name,
+                    },
+                    callback: function (r) {
+                        if (!r.exc) {
+                            frappe.msgprint(__('Provision initialisée'));
+                        }
+                    }
+                });
+                d.hide();
+            }
+        });
+        d.show();
+    }, __('Actions'));
+}
+
+
+frappe.ui.form.on('Pay Family Details', {
+    type(frm, cdt, cdn) {
+        update_family_details(frm);
+    },
+
+    date_of_birth(frm, cdt, cdn) {
+        update_family_details(frm);
+    },
+
+    pay_family_details_add(frm, cdt, cdn) {
+        update_family_details(frm);
+    },
+
+    pay_family_details_remove(frm, cdt, cdn) {
+        update_family_details(frm);
+    }
+});
+
+
+// =============================================================================
+// Catégorie / Salaire
+// =============================================================================
+
+function category_by(frm) {
+    frappe.call({
+        method: 'be_pay.overrides.employee.category_by',
+        callback: function(r) {
+            if (r.message) {
+
+                if (r.message.auto_assign_employee_category_by_salary == 1) {
+                    frm.toggle_reqd('ctc', true);
+                    frm.toggle_reqd('employee_category_detail', false);
+
+                    if (frm.doc.ctc) {
+                        set_category_min_max(frm);
+                    }
+
+                } else {
+                    frm.toggle_reqd('employee_category_detail', true);
+                    frm.toggle_reqd('ctc', false);
+
+                    if (frm.doc.employee_category_detail) {
+                        set_category_salary(frm);
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+function set_category_min_max(frm) {
+    frappe.call({
+        method: 'be_pay.overrides.employee.set_category_min_max',
+        args: {
+            salary_ctc: frm.doc.ctc
+        },
+        callback: function(r) {
+            if (r.message) {
+                frm.set_value('employee_category_detail', r.message.name);
+            }
+        }
+    });
+}
+
+
+function set_category_salary(frm) {
+    frappe.call({
+        method: 'be_pay.overrides.employee.set_category_salary',
+        args: {
+            category: frm.doc.employee_category_detail
+        },
+        callback: function(r) {
+            if (r.message) {
+                frm.set_value('ctc', r.message.basic_salary);
+            }
+        }
+    });
+}
+
+
+// =============================================================================
+// Détails familiaux — âge & bénéficiaire
+// =============================================================================
+
+function update_family_details(frm) {
+    if (!frm.doc.pay_family_details || !frm.doc.pay_family_details.length) {
+        return;
+    }
+
+    // Récupère dependent_age depuis Pay Payroll Settings (cache côté client)
+    frappe.db.get_single_value('Pay Payroll Settings', 'dependent_age')
+        .then(dependent_age_limit => {
+            dependent_age_limit = parseFloat(dependent_age_limit || 0);
+            let today = new Date();
+            let count_child = 0;
+            let count_dependent = 0;
+
+            frm.doc.pay_family_details.forEach(row => {
+                // --- Calcul de l'âge ------------------------------------
+                let age = 0;
+                if (row.date_of_birth) {
+                    let dob = new Date(row.date_of_birth);
+                    age = today.getFullYear() - dob.getFullYear();
+                    let m = today.getMonth() - dob.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                        age--;
+                    }
+                }
+                frappe.model.set_value(row.doctype, row.name, 'age', age);
+
+                // --- Détermination du bénéficiaire ----------------------
+                let beneficiary = 0;
+
+                if (row.type === 'Dependent') {
+                    beneficiary = 1;
+                    count_dependent += 1;
+                } else if (row.type === 'Child' || row.type === 'Others') {
+                    if (dependent_age_limit && age < dependent_age_limit) {
+                        beneficiary = 1;
+                        if (row.type === 'Child') {
+                            count_child += 1;
+                        }
+                    } else {
+                        beneficiary = 0;
+                    }
+                }
+
+                frappe.model.set_value(row.doctype, row.name, 'beneficiary', beneficiary);
+            });
+
+            // Mise à jour des compteurs sur Employee (en dehors du tableau)
+            if (frm.fields_dict.child) {
+                frm.set_value('child', count_child);
+            }
+            if (frm.fields_dict.dependent) {
+                frm.set_value('dependent', count_child + count_dependent);
+            }
+        });
+}

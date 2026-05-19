@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{YY}PROV{###}",
+ "autoname": "format:{fiscal_year}PROV{employment_type}",
  "creation": "2026-05-14 09:10:38.600026",
  "default_view": "List",
  "doctype": "DocType",
@@ -10,17 +10,15 @@
  "field_order": [
   "fiscal_year",
   "column_break_oyelb",
-  "pay_secondary_calendar",
+  "company",
   "section_break_xblxy",
-  "start_date",
   "employment_type",
-  "pay_first_start",
-  "pay_second_start",
+  "start_date",
   "column_break_hiksf",
-  "end_date",
   "leave_type",
-  "pay_first_end",
-  "pay_second_end",
+  "end_date",
+  "is_external_report",
+  "external_report_month",
   "section_break_j868h",
   "pay_ratio",
   "tab_break_wrmci",
@@ -37,18 +35,14 @@
   {
    "fieldname": "fiscal_year",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Fiscal Year",
-   "options": "Fiscal Year"
+   "options": "Fiscal Year",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_oyelb",
    "fieldtype": "Column Break"
-  },
-  {
-   "default": "0",
-   "fieldname": "pay_secondary_calendar",
-   "fieldtype": "Check",
-   "label": "Secondary Calendar"
   },
   {
    "fieldname": "section_break_xblxy",
@@ -63,20 +57,9 @@
   {
    "fieldname": "employment_type",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Employment Type",
    "options": "Employment Type"
-  },
-  {
-   "fieldname": "pay_first_start",
-   "fieldtype": "Date",
-   "hidden": 1,
-   "label": "First Start"
-  },
-  {
-   "fieldname": "pay_second_start",
-   "fieldtype": "Date",
-   "hidden": 1,
-   "label": "Second Start"
   },
   {
    "fieldname": "column_break_hiksf",
@@ -90,20 +73,11 @@
   {
    "fieldname": "leave_type",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Leave Type",
-   "options": "Leave Type"
-  },
-  {
-   "fieldname": "pay_first_end",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "First End"
-  },
-  {
-   "fieldname": "pay_second_end",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "Second End"
+   "link_filters": "[[\"Leave Type\",\"is_on_provision\",\"=\",1]]",
+   "options": "Leave Type",
+   "reqd": 1
   },
   {
    "fieldname": "section_break_j868h",
@@ -163,17 +137,38 @@
    "options": "Pay Provision",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_external_report",
+   "fieldtype": "Check",
+   "label": "Report Externe"
+  },
+  {
+   "depends_on": "eval:doc.is_external_report==1",
+   "fieldname": "external_report_month",
+   "fieldtype": "Select",
+   "label": "Mois de Report",
+   "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-14 09:10:38.600026",
+ "modified": "2026-05-19 21:39:51.920082",
  "modified_by": "Administrator",
  "module": "Be Pay",
  "name": "Pay Provision",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

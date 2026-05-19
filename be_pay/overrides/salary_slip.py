@@ -60,6 +60,54 @@ class CustomSalarySlip(SalarySlip):
         self._be_pay_assign_category_salary()
         super().after_insert()
 
+    def on_submit(self):
+        """
+        À la soumission : si mois de décembre, solde la provision gratification.
+        """
+        if getdate(self.end_date).month == 12:
+            self._be_pay_settle_gratuity_provision()
+        super().on_submit()
+
+    def on_cancel(self):
+        """
+        À l'annulation : si mois de décembre, restaure la provision gratification.
+        """
+        if getdate(self.end_date).month == 12:
+            self._be_pay_restore_gratuity_provision()
+        super().on_cancel()
+
+    def _be_pay_settle_gratuity_provision(self):
+        """Solde la provision gratification (pris = total, total = 0)."""
+        frappe.db.sql(
+            """
+            UPDATE `tabPay Provision Gratuity` r
+            INNER JOIN `tabPay Provision` p ON p.name = r.parent
+            SET r.pay_taken = r.pay_total,
+                r.pay_total = 0
+            WHERE r.employee = %(employee)s
+              AND %(to_date)s BETWEEN p.start_date AND p.end_date
+            """,
+            {"employee": self.employee, "to_date": self.end_date},
+        )
+
+    def _be_pay_restore_gratuity_provision(self):
+        """Restaure la provision gratification après annulation."""
+        frappe.db.sql(
+            """
+            UPDATE `tabPay Provision Gratuity` r
+            INNER JOIN `tabPay Provision` p ON p.name = r.parent
+            SET r.pay_taken = 0,
+                r.pay_total = r.pay_report
+                    + r.pay_january + r.pay_february + r.pay_march
+                    + r.pay_april + r.pay_may + r.pay_june
+                    + r.pay_july + r.pay_august + r.pay_september
+                    + r.pay_october + r.pay_november + r.pay_december
+            WHERE r.employee = %(employee)s
+              AND %(to_date)s BETWEEN p.start_date AND p.end_date
+            """,
+            {"employee": self.employee, "to_date": self.end_date},
+        )
+
     def _be_pay_fetch_attendance_data(self):
         """
         Récupère les données de présence depuis Attendance Line.

@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "field:code",
  "creation": "2026-05-14 14:09:18.102963",
@@ -18,8 +19,8 @@
   "currency",
   "basic_salary",
   "basic_salary_per_day",
-  "min",
-  "max",
+  "min_salary",
+  "max_salary",
   "number",
   "column_break_agkz",
   "seniority",
@@ -93,16 +94,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "min",
-   "fieldtype": "Currency",
-   "label": "Min"
-  },
-  {
-   "fieldname": "max",
-   "fieldtype": "Currency",
-   "label": "Max"
-  },
-  {
    "fieldname": "seniority",
    "fieldtype": "Float",
    "label": "Seniority"
@@ -139,12 +130,22 @@
    "fieldname": "currency",
    "fieldtype": "Data",
    "label": "Currency"
+  },
+  {
+   "fieldname": "min_salary",
+   "fieldtype": "Currency",
+   "label": "Min"
+  },
+  {
+   "fieldname": "max_salary",
+   "fieldtype": "Currency",
+   "label": "Max"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-05-14 22:26:57.138781",
+ "modified": "2026-05-17 08:06:45.096924",
  "modified_by": "Administrator",
  "module": "Be Pay",
  "name": "Pay Employee Category Detail",
@@ -166,7 +167,10 @@
  ],
  "row_format": "Dynamic",
  "rows_threshold_for_grid_search": 20,
+ "search_fields": "description",
+ "show_title_field_in_link": 1,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "description"
 }

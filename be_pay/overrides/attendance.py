@@ -30,7 +30,7 @@ class CustomAttendance(Attendance):
         Avant sauvegarde : création des présences pour jours fériés antérieurs.
         """
         self._be_pay_create_holiday_attendance()
-        super().before_save()
+        # Attendance (HRMS) ne définit pas before_save ; inutile d'appeler super()
 
     def _be_pay_set_custom_naming_series(self):
         """
@@ -53,45 +53,52 @@ class CustomAttendance(Attendance):
         """
         Crée les présences pour les 7 jours précédents si jours fériés.
         """
-        if not self.attendance_date or not self.employee:
+        if getattr(frappe.local, "_be_pay_creating_holiday_attendance", False):
             return
 
-        to_date = frappe.utils.getdate(self.attendance_date)
-        current_date = frappe.utils.add_days(to_date, -7)
+        frappe.local._be_pay_creating_holiday_attendance = True
+        try:
+            if not self.attendance_date or not self.employee:
+                return
 
-        while current_date <= to_date:
-            holidays = frappe.db.sql(
-                """
-                SELECT * FROM `tabHoliday`
-                WHERE holiday_date = %s AND weekly_off = 1
-                """,
-                (current_date,),
-                as_dict=True
-            )
+            to_date = frappe.utils.getdate(self.attendance_date)
+            current_date = frappe.utils.add_days(to_date, -7)
 
-            if holidays:
-                existing = frappe.db.sql(
+            while current_date < to_date:
+                holidays = frappe.db.sql(
                     """
-                    SELECT * FROM `tabAttendance`
-                    WHERE attendance_date = %s AND employee = %s
+                    SELECT * FROM `tabHoliday`
+                    WHERE holiday_date = %s AND weekly_off = 1
                     """,
-                    (holidays[0].holiday_date, self.employee),
+                    (current_date,),
                     as_dict=True
                 )
 
-                if not existing:
-                    attendance = frappe.new_doc("Attendance")
-                    attendance.employee = self.employee
-                    attendance.employee_name = self.employee_name
-                    attendance.status = "Present"
-                    attendance.attendance_date = current_date
-                    attendance.company = self.company
-                    attendance.department = self.department
-                    attendance.shift = "O"
-                    attendance.save()
-                    attendance.submit()
+                if holidays:
+                    existing = frappe.db.sql(
+                        """
+                        SELECT * FROM `tabAttendance`
+                        WHERE attendance_date = %s AND employee = %s
+                        """,
+                        (holidays[0].holiday_date, self.employee),
+                        as_dict=True
+                    )
 
-            current_date = frappe.utils.add_days(current_date, 1)
+                    if not existing:
+                        attendance = frappe.new_doc("Attendance")
+                        attendance.employee = self.employee
+                        attendance.employee_name = self.employee_name
+                        attendance.status = "Present"
+                        attendance.attendance_date = current_date
+                        attendance.company = self.company
+                        attendance.department = self.department
+                        attendance.shift = "O"
+                        attendance.save()
+                        attendance.submit()
+
+                current_date = frappe.utils.add_days(current_date, 1)
+        finally:
+            frappe.local._be_pay_creating_holiday_attendance = False
 
 
 def get_attendance_summary_for_period(employee, from_date, to_date):

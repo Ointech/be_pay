@@ -76,9 +76,9 @@ def get_employee_category_salary(employee_category_details):
         return None
 
     return frappe.db.get_value(
-        "Employee Category Details",
+        "Pay Employee Category Detail",
         employee_category_details,
-        "pay_basic_salary_per_day"
+        "basic_salary_per_day"
     )
 
 

@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-16 18:57:20.813675",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "apply_accrual_to_all_employment_types",
+  "section_break_tvvb",
+  "monthly_leave_accrual_days",
+  "column_break_uqxk",
+  "employment_type",
+  "have_bonus",
+  "have_ticket",
+  "column_break_cmmz",
+  "add",
+  "section_break_jrhf",
+  "leave_accrual_detail"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "apply_accrual_to_all_employment_types",
+   "fieldtype": "Check",
+   "label": "Apply Accrual to All Employment Types"
+  },
+  {
+   "fieldname": "section_break_tvvb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "monthly_leave_accrual_days",
+   "fieldtype": "Float",
+   "label": "Monthly Leave Accrual Days",
+   "mandatory_depends_on": "eval:doc.apply_accrual_to_all_employment_types == 1",
+   "precision": "1"
+  },
+  {
+   "fieldname": "column_break_uqxk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.apply_accrual_to_all_employment_types != 1",
+   "fieldname": "employment_type",
+   "fieldtype": "Link",
+   "label": "Employment Type",
+   "options": "Employment Type"
+  },
+  {
+   "fieldname": "column_break_cmmz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.apply_accrual_to_all_employment_types != 1",
+   "fieldname": "add",
+   "fieldtype": "Button",
+   "label": "Add"
+  },
+  {
+   "fieldname": "section_break_jrhf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "depends_on": "eval:doc.apply_accrual_to_all_employment_types != 1",
+   "fieldname": "leave_accrual_detail",
+   "fieldtype": "Table",
+   "label": " Leave Accrual Detail",
+   "options": "Pay Setting Leave Accrual Detail"
+  },
+  {
+   "default": "0",
+   "fetch_from": "employment_type.have_bonus",
+   "fieldname": "have_bonus",
+   "fieldtype": "Check",
+   "label": "Have Bonus"
+  },
+  {
+   "default": "0",
+   "fetch_from": "employment_type.have_ticket",
+   "fieldname": "have_ticket",
+   "fieldtype": "Check",
+   "label": "Have Ticket"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-05-17 06:44:40.152020",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Pay Settings Leave Accrual",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
