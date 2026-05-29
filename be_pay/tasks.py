@@ -273,6 +273,7 @@ def cron_execute(
                     "BAY5240500078", "BAY5240500099", "CGT9221060020",
                     "CGT9221060023", "BAY5244500049",
                 }
+                
                 log_type = "IN" if terminal_sn in in_terminals else "OUT"
 
             # Vérifier si un pointage identique (même employé, même date,
