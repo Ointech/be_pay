@@ -18,4 +18,3 @@ class CustomSalaryComponent(SalaryComponent):
                     "Le composant 'Air Ticket' est protégé et ne peut pas être supprimé."
                 )
             )
-        super().on_trash()

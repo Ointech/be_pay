@@ -99,20 +99,23 @@ def get_attendance_summary(pay_period, employee):
     results = frappe.db.sql(
         """
         SELECT
-            s.hours_30,
-            s.hours_60,
-            s.sunday_hours,
-            s.custom_mise_a_pied,
+            s.pay_hours_30 AS hours_30,
+            s.pay_hours_60 AS hours_60,
+            s.pay_sunday_hours AS sunday_hours,
+            s.pay_night_hours AS night_hours,
             s.absence,
-            s.custom_presence,
-            s.a1, s.a2, s.a3, s.a4, s.a5,
-            s.a6, s.a7, s.a8, s.a9,
-            s.n1, s.n2, s.n3,
-            s.custom_sm
+            s.absences,
+            s.pay_absence,
+            s.hours,
+            s.days,
+            s.custom_hs_130,
+            s.custom_hs_160,
+            s.custom_hs_ferie,
+            s.is_overtime_line
         FROM
-            `tabAttendance Line` s
+            `tabPay Attendance Line` s
         INNER JOIN
-            `tabAttendance List` d ON d.name = s.parent
+            `tabPay Attendance List` d ON d.name = s.parent
         WHERE
             d.pay_period = %s
             AND s.employee = %s

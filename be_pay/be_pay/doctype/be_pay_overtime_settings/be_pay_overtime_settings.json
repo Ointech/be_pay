@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-05-27 17:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "standard_daily_hours",
+  "section_break_base",
+  "base_salary_components"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "7.5",
+   "fieldname": "standard_daily_hours",
+   "fieldtype": "Float",
+   "label": "Heures journalières standard",
+   "non_negative": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_base",
+   "fieldtype": "Section Break",
+   "label": "Composantes de base"
+  },
+  {
+   "fieldname": "base_salary_components",
+   "fieldtype": "Table",
+   "label": "Composantes salariales de base",
+   "options": "Be Pay OT Base Component"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-05-27 17:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Be Pay",
+ "name": "Be Pay Overtime Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "HR Manager",
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

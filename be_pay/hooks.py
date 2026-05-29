@@ -148,6 +148,12 @@ after_install = "be_pay.install.after_install"
 
 # Scheduled Tasks
 # ---------------
+scheduler_events = {
+	"hourly": [
+		"be_pay.tasks.cron",
+        #"be_pay.tasks.every_minute"
+	],
+}
 
 # scheduler_events = {
 # 	"all": [
@@ -271,6 +277,7 @@ override_doctype_class = {
     "Leave Allocation": "be_pay.overrides.leave_allocation.CustomLeaveAllocation",
     "Payroll Period": "be_pay.overrides.payroll_period.CustomPayrollPeriod",
     "Payroll Entry": "be_pay.overrides.payroll_entry.CustomPayrollEntry",
+    "Shift Type": "be_pay.overrides.shift_type.CustomShiftType",
 }
 
 # --- BEGIN AUTO-GENERATED ---
@@ -279,6 +286,8 @@ doc_events = {
     "Attendance": {
         "Before Insert": "be_pay.events.attendance.before_insert",
         "Before Save": "be_pay.events.attendance.before_save",
+        "On Submit": "be_pay.events.attendance.on_submit",
+        "On Cancel": "be_pay.events.attendance.on_cancel",
     },
     "Employee": {
         "Before Insert": "be_pay.events.employee.before_insert",
@@ -316,6 +325,8 @@ doctype_js = {
     "Loan Type": "public/js/loan_type.js",
     "Salary Slip": "public/js/salary_slip.js",
     "Payroll Entry": "public/js/payroll_entry.js",
+    "Shift Type": "public/js/shift_type.js",
+    "Pay Payroll Settings": "public/js/pay_payroll_settings.js",
 }
 
 override_whitelisted_methods = {
@@ -329,6 +340,8 @@ override_whitelisted_methods = {
 fixtures = [
     # DocTypes maîtres du module Normalize
     "Pay Position Category",
+    # Custom HTML Block pour le dashboard Leave
+    "Custom HTML Block",
     # Customisations sur les doctypes ERPNext (exportées via bench export-fixtures)
     {"dt": "Custom Field", "filters": [["module", "=", "Be Pay"]]},
     {"dt": "Property Setter", "filters": [["module", "=", "Be Pay"]]},

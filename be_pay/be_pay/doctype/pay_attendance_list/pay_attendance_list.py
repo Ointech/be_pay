@@ -2,154 +2,300 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
+from frappe.utils import flt, getdate, add_days
+from collections import defaultdict
+
+
+@frappe.whitelist()
+def get_allowed_salary_components():
+	"""
+	Retourne la liste des salary_components autorisés
+	depuis Pay Payroll Settings > attendance_salary_components.
+	"""
+	settings = frappe.get_single("Pay Payroll Settings")
+	allowed = []
+	for row in settings.attendance_salary_components or []:
+		if row.salary_component:
+			allowed.append(row.salary_component)
+	return allowed
+
 
 class PayAttendanceList(Document):
-    def before_save(self):
-        # --- from script: Attendance Synchron (exec fallback) ---
-        script = "if doc.pay_find == 0:\n  # Initialisation des variables\n  pay_a1 = 0\n  pay_a2 = 0\n  pay_a3 = 0\n  pay_a4 = 0\n  \n  All_Value = 0\n  \n  # R\u00e9cup\u00e9rer tous les employ\u00e9s\n  query = \"\"\"\n  SELECT *\n  FROM `tabEmployee`\n  \"\"\"\n  employees = frappe.db.sql(query, as_dict=True)\n  \n  for empl in employees:\n  # Requ\u00eate pour obtenir les absences pour un employ\u00e9 sp\u00e9cifique\n  pay_a1 = 0\n  pay_a2 = 0\n  pay_a3 = 0\n  pay_a4 = 0\n  save = 0\n  \n  query = \"\"\"\n  SELECT \n  SUM(CASE \n  WHEN st.shift_deux_absences = 1 THEN 2\n  ELSE 1\n  END) AS resultats,\n  a.employee\n  FROM `tabAttendance` a\n  JOIN `tabShift Type` st ON a.shift = st.name\n  WHERE a.employee = %s\n  AND a.docstatus = 1\n  AND a.pay_status = 'Absent'\n  AND a.attendance_date BETWEEN %s AND %s\n  \"\"\"\n  \n  attendance_results = frappe.db.sql(query, (empl.employee, doc.start_date, doc.end_date), as_dict=True)\n  \n  query = \"\"\"\n  SELECT \n  a.nombre\n  FROM `tabHeures supplementaire` a\n  WHERE a.employee = %s\n  AND a.docstatus = 1\n  AND a.date_jour BETWEEN %s AND %s\n  \"\"\"\n  Heures_results = frappe.db.sql(query, (empl.employee, doc.start_date, doc.end_date), as_dict=True)\n  \n  \n  date_time_string = frappe.utils.now()\n  \n  \n  start_date = frappe.utils.getdate(doc.start_date)\n  end_date = frappe.utils.getdate(doc.end_date) \n  save = 0\n \n  query = \"\"\"\n  SELECT \n  s.leave_type,\n  f.date_day_off,\n  s.from_date,\n  s.to_date,\n  COUNT(f.date_day_off) AS total_off,\n  CASE \n  WHEN s.from_date < %(start_date)s AND s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, %(start_date)s) + 1\n  WHEN s.from_date < %(start_date)s THEN DATEDIFF(s.to_date, %(start_date)s) + 1\n  WHEN s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, s.from_date) + 1\n  ELSE DATEDIFF(s.to_date, s.from_date) + 1\n  END AS total_days,\n  (CASE \n  WHEN s.from_date < %(start_date)s AND s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, %(start_date)s) + 1\n  WHEN s.from_date < %(start_date)s THEN DATEDIFF(s.to_date, %(start_date)s) + 1\n  WHEN s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, s.from_date) + 1\n  ELSE DATEDIFF(s.to_date, s.from_date) + 1\n  END - COUNT(f.date_day_off)) AS total_leave_days\n  FROM \n  `tabLeave Application` s\n  LEFT JOIN \n  `tabLeave Application Off` f\n  ON s.name = f.parent\n  WHERE \n  s.employee = %(employee)s\n  AND s.docstatus = 1\n  AND s.from_date <= %(end_date)s\n  AND s.to_date >= %(start_date)s\n  AND s.leave_type = %(leave_type)s\n  AND (f.date_day_off BETWEEN %(start_date)s AND %(end_date)s OR f.date_day_off IS NULL)\n  GROUP BY \n  s.leave_type\n  \"\"\"\n  \n  results = frappe.db.sql(query, {\n  \"employee\": empl.employee,\n  \"start_date\": start_date,\n  \"end_date\": end_date,\n  \"leave_type\": \"Mise \u00e0 pied\"\n  }, as_dict=True)\n  \n  # Si la table `Leave Application Off` ne contient pas de donn\u00e9es (r\u00e9sultats vides)\n  if not results:\n  # On r\u00e9cup\u00e8re les informations de `Leave Application` sans la table `Leave Application Off`\n  query_fallback = \"\"\"\n  SELECT \n  s.leave_type,\n  NULL AS date_day_off, \n  s.from_date,\n  s.to_date,\n  0 AS total_off,\n  CASE \n  WHEN s.from_date < %(start_date)s AND s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, %(start_date)s) + 1\n  WHEN s.from_date < %(start_date)s THEN DATEDIFF(s.to_date, %(start_date)s) + 1\n  WHEN s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, s.from_date) + 1\n  ELSE DATEDIFF(s.to_date, s.from_date) + 1\n  END AS total_days,\n  CASE \n  WHEN s.from_date < %(start_date)s AND s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, %(start_date)s) + 1\n  WHEN s.from_date < %(start_date)s THEN DATEDIFF(s.to_date, %(start_date)s) + 1\n  WHEN s.to_date > %(end_date)s THEN DATEDIFF(%(end_date)s, s.from_date) + 1\n  ELSE DATEDIFF(s.to_date, s.from_date) + 1\n  END AS total_leave_days\n  FROM \n  `tabLeave Application` s\n  WHERE \n  s.employee = %(employee)s\n  AND s.docstatus = 1\n  AND s.from_date <= %(end_date)s\n  AND s.to_date >= %(start_date)s\n  AND s.leave_type = %(leave_type)s\n  \"\"\"\n  results = frappe.db.sql(query_fallback, {\n  \"employee\": empl.employee,\n  \"start_date\": start_date,\n  \"end_date\": end_date,\n  \"leave_type\": \"Mise \u00e0 pied\"\n  }, as_dict=True)\n  \n  if results :\n  \n  #frappe.msgprint(f'Nombre de Jour est de {results[0].total_leave_days}')\n  #doc.custom_jours_mise_a_pied = results[0].total_leave_days\n  pay_a3 = results[0].total_leave_days\n  \n  query = \"\"\"\n  SELECT \n  *\n  FROM `tabPay Leave Taken` s\n  WHERE s.parent = %s AND leave_type = 'Mise \u00e0 pied' LIMIT 1;\n  \"\"\"\n  \n  # Ex\u00e9cuter la requ\u00eate SQL avec les param\u00e8tres\n  results_two = frappe.db.sql(query, (doc.name), as_dict=True) \n  \n  #doc.total_leaves = 0 \n  \n  if attendance_results:\n  pay_a2 = 0\n  pay_a1 = attendance_results[0].resultats\n  employee = attendance_results[0].employee\n  \n  if Heures_results:\n  pay_a2 = Heures_results[0].nombre\n  \n  # Si des absences sont trouv\u00e9es\n  if (pay_a1 and int(pay_a1) > 0) or (pay_a2 and int(pay_a2) > 0) or (pay_a2 and int(pay_a3) > 0) :\n  # V\u00e9rification si l'employ\u00e9 existe d\u00e9j\u00e0 pour la p\u00e9riode s\u00e9lectionn\u00e9e\n  query = \"\"\"\n  SELECT * FROM `tabPay Attendance List` A\n  INNER JOIN `tabPay Attendance Line` L ON L.parent = A.name\n  WHERE L.employee = %s AND A.pay_period = %s AND A.docstatus = 1\n  \"\"\"\n  existing_records = frappe.db.sql(query, (empl.employee, doc.pay_period), as_dict=True)\n  \n  if not existing_records:\n  # Ajouter une nouvelle ligne d'pay_absence si l'enregistrement n'existe pas\n  child_doc = frappe.new_doc(\"Attendance Line\")\n  child_doc.update({\n  \"pay_absence\": pay_a1,\n  \"pay_sunday_hours\": pay_a2,\n  \"pay_custom_mise_a_pied\": pay_a3,\n  \"employee\": empl.employee\n  })\n  \n  # Ajouter \u00e0 la table parente\n  doc.append(\"attendance_line\", child_doc)\n  \n  # Marquer le document comme trouv\u00e9\n  doc.pay_find = 1\n "
-        exec(script, {"self": self, "frappe": frappe, "doc": self})
+	def validate(self):
+		self._validate_unique_period()
 
-        # --- from script: Before Valide Synchronise ---
-        if self.pay_find == 0 :
+	def before_save(self):
+		frappe.msgprint("before_save appelé")
+		self.calculate_lines()
 
-            pay_a1 = 0
-            pay_a2 = 0
-            pay_a3 = 0
-            pay_a4 = 0
-            pay_a5 = 0
-            pay_a6 = 0
-            pay_a7 = 0
-            pay_a8 = 0
-            pay_a9 = 0
-            pay_n1 = 0
-            pay_n2 = 0
-            pay_n3 = 0
-            pay_a10 = 0
-            sm = 0
-            #pay_absence = 0
+	def calculate_lines(self):
+		"""
+		Calcule pour chaque employé du PAL :
+		- Heures supplémentaires (depuis Attendance.hours_control) réparties
+		  dans les champs dynamiques selon Be Pay Overtime Rule.
+		- Absences (jours sans Attendance, Leave, Holiday ni Attendance Request).
+		"""
+		try:
+			self._calculate_lines_core()
+		except Exception:
+			frappe.log_error(
+				title="Pay Attendance List - Erreur calculate_lines",
+				message=frappe.get_traceback(),
+			)
+			raise
 
-            All_Value = 0
+	def _calculate_lines_core(self):
+		frappe.msgprint("calculate_lines démarrée...")
+		if not self.company or not self.start_date or not self.end_date:
+			frappe.msgprint(
+				f"calculate_lines abortée : company={self.company} start={self.start_date} end={self.end_date}",
+				alert=True,
+			)
+			return
 
-            query = """
-            SELECT *
-            FROM `tabEmployee`
-            """
+		# ------------------------------------------------------------------
+		# 1. Règles HS
+		# ------------------------------------------------------------------
+		rules = frappe.get_all(
+			"Be Pay Overtime Rule",
+			filters={"company": self.company, "active": 1},
+			fields=["target_fieldname", "is_holiday_rule", "from_hours", "to_hours"],
+			order_by="from_hours asc",
+		)
 
-            # Exécuter la requête SQL avec les paramètres
-            results = frappe.db.sql(query, as_dict=True)
+		# ------------------------------------------------------------------
+		# 2. Employés concernés
+		# ------------------------------------------------------------------
+		emp_filters = {"company": self.company, "status": "Active"}
+		if self.employment_type:
+			emp_filters["employment_type"] = self.employment_type
+		employees = frappe.get_all(
+			"Employee",
+			filters=emp_filters,
+			fields=["name", "employee_name", "employment_type", "holiday_list"],
+		)
 
-            for empl in results :
+		if not employees:
+			self.attendance_line = []
+			return
 
+		# ------------------------------------------------------------------
+		# 3. Préchargement des données de la période
+		# ------------------------------------------------------------------
+		start = getdate(self.start_date)
+		end = getdate(self.end_date)
 
-                query = """
-                SELECT *
-                FROM `tabShift Type`
-                """
+		# Toutes les dates de la période
+		period_dates = []
+		d = start
+		while d <= end:
+			period_dates.append(d)
+			d = add_days(d, 1)
+		period_set = set(period_dates)
 
-                # Exécuter la requête SQL avec les paramètres
-                results = frappe.db.sql(query, as_dict=True)
+		# Attendances
+		all_attendances = frappe.get_all(
+			"Attendance",
+			filters={
+				"attendance_date": ["between", [self.start_date, self.end_date]],
+				"docstatus": 1,
+			},
+			fields=["employee", "attendance_date", "hours_control", "shift"],
+		)
+		att_by_emp = defaultdict(list)
+		for a in all_attendances:
+			att_by_emp[a.employee].append(a)
 
-                for Shift in results :
+		# Leave Applications approuvées
+		all_leaves = frappe.get_all(
+			"Leave Application",
+			filters={
+				"docstatus": 1,
+				"status": "Approved",
+				"from_date": ["<=", self.end_date],
+				"to_date": [">=", self.start_date],
+			},
+			fields=["employee", "from_date", "to_date"],
+		)
+		leave_by_emp = defaultdict(list)
+		for la in all_leaves:
+			leave_by_emp[la.employee].append(la)
 
-                    query = """
+		# Attendance Requests
+		all_requests = frappe.get_all(
+			"Attendance Request",
+			filters={
+				"docstatus": 1,
+				"from_date": ["<=", self.end_date],
+				"to_date": [">=", self.start_date],
+			},
+			fields=["employee", "from_date", "to_date"],
+		)
+		request_by_emp = defaultdict(list)
+		for ar in all_requests:
+			request_by_emp[ar.employee].append(ar)
 
-                        SELECT COUNT(*) AS resultats
-                        FROM `tabAttendance` 
-                        WHERE shift = %s
-                        AND employee = %s
-                        AND docstatus = 1
-                        AND attendance_date BETWEEN %s AND %s
+		# Holiday lists
+		company_holiday_list = frappe.db.get_value(
+			"Company", self.company, "default_holiday_list"
+		)
+		emp_holiday_lists = {}
+		unique_hol_lists = set()
+		for emp in employees:
+			hl = emp.holiday_list or company_holiday_list
+			emp_holiday_lists[emp.name] = hl
+			if hl:
+				unique_hol_lists.add(hl)
 
-                        """
+		# Holidays par liste
+		holidays_by_list = defaultdict(set)
+		if unique_hol_lists:
+			for h in frappe.get_all(
+				"Holiday",
+				filters={
+					"parent": ["in", list(unique_hol_lists)],
+					"holiday_date": ["between", [self.start_date, self.end_date]],
+				},
+				fields=["parent", "holiday_date"],
+			):
+				holidays_by_list[h.parent].add(getdate(h.holiday_date))
 
-                    # Exécuter la requête SQL avec les paramètres
-                    results = frappe.db.sql(query, (Shift.name,empl.employee, self.start_date, self.end_date), as_dict=True)
+		# Holiday list par shift (via Shift Type)
+		all_shifts = {a.shift for a in all_attendances if a.shift}
+		shift_holiday_lists = {}
+		for shift in all_shifts:
+			shift_holiday_lists[shift] = frappe.db.get_value(
+				"Shift Type", shift, "holiday_list"
+			)
 
+		# ------------------------------------------------------------------
+		# 4. Traitement employé par employé
+		# ------------------------------------------------------------------
+		self.attendance_line = []
 
-                    if results:
-                        # Accéder à la pay_sum des jours de congé à partir du premier et unique enregistrement de la liste
+		for emp in employees:
+			employee = emp.name
+			attendances = att_by_emp.get(employee, [])
 
-                        if Shift.name == 'A1' :
-                            pay_a1 = results[0].resultats
-                        if Shift.name == 'A2' :
-                            pay_a2 = results[0].resultats
-                        if Shift.name == 'A3' :
-                            pay_a3 = results[0].resultats
-                        if Shift.name == 'A4' :
-                            pay_a4 = results[0].resultats
-                        if Shift.name == 'A5' :
-                            pay_a5 = results[0].resultats
-                        if Shift.name == 'A6' :
-                            pay_a6 = results[0].resultats
-                        if Shift.name == 'A7' :
-                            pay_a7 = results[0].resultats
-                        if Shift.name == 'A8' :
-                            pay_a8 = results[0].resultats
-                        if Shift.name == 'A9' :
-                            pay_a9 = results[0].resultats
-                        if Shift.name == 'N1' :
-                            pay_n1 = results[0].resultats
-                        if Shift.name == 'N2' :
-                            pay_n2 = results[0].resultats
-                        if Shift.name == 'N3' :
-                            pay_n3 = results[0].resultats
-                        if Shift.name == 'A10' :
-                            pay_a10 = results[0].resultats
-                        if Shift.name == 'SM' :
-                            sm = results[0].resultats
-                        #if Shift.name == 'O' :
-                        #if Shift.name == 'O' :
-                        #    pay_absence = results[0].resultats
+			# --- Absences ---
+			covered_dates = set()
+			for a in attendances:
+				covered_dates.add(getdate(a.attendance_date))
 
+			for la in leave_by_emp.get(employee, []):
+				d = getdate(la.from_date)
+				while d <= getdate(la.to_date):
+					if d in period_set:
+						covered_dates.add(d)
+					d = add_days(d, 1)
 
-                All_Value = pay_a1 + pay_a2 + pay_a3 + pay_a4 + pay_a5 + pay_a6 + pay_a7 + pay_a8 + pay_a9 + pay_n1 + pay_n2 + pay_n3 + pay_a10 + sm
+			for ar in request_by_emp.get(employee, []):
+				d = getdate(ar.from_date)
+				while d <= getdate(ar.to_date):
+					if d in period_set:
+						covered_dates.add(d)
+					d = add_days(d, 1)
 
-                query = """
-                    SELECT * FROM `tabPay Attendance List` A
-                    INNER JOIN `tabPay Attendance Line` L on L.parent = A.name
-                    WHERE L.employee = %s  AND A.pay_period = %s AND A.docstatus = 1
-                """
+			emp_hl = emp_holiday_lists.get(employee)
+			for hd in holidays_by_list.get(emp_hl, []):
+				covered_dates.add(hd)
 
-                # Exécuter la requête SQL avec les paramètres
-                results = frappe.db.sql(query, (empl.employee, self.pay_period), as_dict=True)
-                #frappe.msgprint(f"Le Matricule {All_Value} se trouve déjà pour la période selectionnée") 
-                #frappe.msgprint(f"Le Shift {sm} se trouve déjà pour la période selectionnée")
-                if results:
-                    All_Value = 0
-                    All_Value = pay_a1 + pay_a2 + pay_a3 + pay_a4 + pay_a5 + pay_a6 + pay_a7 + pay_a8 + pay_a9 + pay_n1 + pay_n2 + pay_n3 + pay_a10 + sm
-                    #frappe.msgprint(f"Le Matricule {empl.employee} se trouve déjà pour la période selectionnée")
-                   #frappe.throw(f"Le Matricule {empl.employee} se trouve déjà pour la période selectionnée")
-                    #frappe.msgprint(f"Element est pay_seniority : {All_Value} ")   
-                else :
-                    # Récupérer le document parent existant
-                    #parent_doc = frappe.get_doc("Pay Attendance List", self.name)
-                    if All_Value != 0 :
-                        # Créer un nouvel enregistrement dans la table fille
-                        child_doc = frappe.new_doc("Pay Attendance Line")
+			absence_days = 0
+			for pd in period_dates:
+				if pd not in covered_dates:
+					absence_days += 1
 
-                        # Définir les valeurs des champs pour le nouvel enregistrement
-                        child_doc.update({
-                            "pay_a1" : pay_a1,
-                            "pay_a2" : pay_a2,
-                            "pay_a3" : pay_a3,
-                            "pay_a4" : pay_a4,
-                            "pay_a5" : pay_a5,
-                            "pay_a6" : pay_a6,
-                            "pay_a7" : pay_a7,
-                            "pay_a8" : pay_a8,
-                            "pay_a9" : pay_a9,
-                            "pay_n1" : pay_n1,
-                            "pay_n2" : pay_n2,
-                            "pay_n3" : pay_n3,
-                            "pay_a10" : pay_a10,
-                            "pay_custom_sm" : sm,
-                            "employee" : empl.employee
-                        })
+			# --- Heures supplémentaires ---
+			total_holiday_hours = 0.0
+			total_normal_hours = 0.0
 
-                        # Ajouter le nouvel enregistrement à la table parente
-                        self.append("attendance_line", child_doc)
-                        self.pay_find = 1
-                       # parent_doc.save()
+			for a in attendances:
+				ad = getdate(a.attendance_date)
+				is_hol = False
 
+				# Vérifier via le shift
+				shift_hl = shift_holiday_lists.get(a.shift)
+				if shift_hl:
+					is_hol = ad in holidays_by_list.get(shift_hl, set())
 
+				# Fallback via employee holiday list
+				if not is_hol and emp_hl:
+					is_hol = ad in holidays_by_list.get(emp_hl, set())
+
+				if is_hol:
+					total_holiday_hours += flt(a.hours_control)
+				else:
+					total_normal_hours += flt(a.hours_control)
+
+			# --- Construction de la ligne ---
+			line_data = {
+				"employee": employee,
+				"employee_name": emp.employee_name or "",
+				"employment_type": emp.employment_type or "",
+				"absence": absence_days,
+			}
+
+			# Règles fériés
+			holiday_rules = [r for r in rules if r.is_holiday_rule]
+			if holiday_rules and total_holiday_hours > 0:
+				line_data[holiday_rules[0].target_fieldname] = total_holiday_hours
+
+			# Règles normales
+			normal_rules = [r for r in rules if not r.is_holiday_rule]
+			if normal_rules and total_normal_hours > 0:
+				for rule in normal_rules:
+					from_h = flt(rule.from_hours)
+					to_h = flt(rule.to_hours)
+					if to_h == 0:
+						to_h = 999999
+					if from_h <= total_normal_hours <= to_h:
+						line_data[rule.target_fieldname] = total_normal_hours
+						break
+
+			# On ajoute la ligne si elle contient au moins une donnée
+			has_data = (
+				absence_days > 0
+				or total_holiday_hours > 0
+				or total_normal_hours > 0
+			)
+			if has_data:
+				self.append("attendance_line", line_data)
+
+		frappe.logger().info(
+			"PAL %s | calculate_lines terminée : %s lignes créées",
+			self.name, len(self.attendance_line or [])
+		)
+
+	def _validate_unique_period(self):
+		"""Vérifie qu'il n'existe pas déjà un PAL pour la même période + société + type."""
+		if not self.pay_period or not self.company:
+			return
+
+		filters = {
+			"pay_period": self.pay_period,
+			"company": self.company,
+			"name": ("!=", self.name),
+		}
+		if self.employment_type:
+			filters["employment_type"] = self.employment_type
+
+		filters["docstatus"] = ("!=", 2)
+		existing = frappe.get_all(
+			"Pay Attendance List",
+			filters=filters,
+			fields=["name"],
+			limit=1,
+		)
+		if existing:
+			frappe.throw(
+				_(
+					"Un Pay Attendance List existe déjà pour cette période ({0}), "
+					"société ({1}) et type d'emploi ({2})."
+				).format(
+					self.pay_period,
+					self.company,
+					self.employment_type or "Non spécifié",
+				)
+			)

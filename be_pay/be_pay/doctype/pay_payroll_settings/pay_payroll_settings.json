@@ -20,7 +20,10 @@
   "revoke_allowance_on_provision_cancellation",
   "section_break_payroll_period",
   "use_payroll_period_by_employment_type",
-  "payroll_period_details"
+  "payroll_period_details",
+  "section_break_attendance",
+  "use_shift_assignment_for_attendance",
+  "attendance_salary_components"
  ],
  "fields": [
   {
@@ -108,6 +111,24 @@
    "fieldname": "revoke_allowance_on_provision_cancellation",
    "fieldtype": "Check",
    "label": "Revoke Allowance On Provision Cancellation"
+  },
+  {
+   "fieldname": "section_break_attendance",
+   "fieldtype": "Section Break",
+   "label": "Attendance Configuration"
+  },
+  {
+   "default": "0",
+   "description": "If checked, Attendance will use the employee's official Shift Assignment instead of auto-detecting the shift from the check-in time.",
+   "fieldname": "use_shift_assignment_for_attendance",
+   "fieldtype": "Check",
+   "label": "Use Shift Assignment for Attendance"
+  },
+  {
+   "fieldname": "attendance_salary_components",
+   "fieldtype": "Table",
+   "label": "Attendance Salary Components",
+   "options": "Pay Salary Component Attendance"
   }
  ],
  "grid_page_length": 50,

@@ -2,20 +2,22 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "format:ATT-LIST-{YY}-{###}",
- "creation": "2026-05-14 09:10:38.000000",
- "custom": 1,
+ "creation": "2026-05-14 09:10:38",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "pay_period",
+  "company",
+  "employment_type",
+  "pay_find",
+  "column_break_ebwy",
   "start_date",
   "end_date",
-  "column_break_1",
-  "pay_period",
-  "pay_find",
   "section_break_1",
-  "attendance_line"
+  "attendance_line",
+  "amended_from"
  ],
  "fields": [
   {
@@ -29,13 +31,22 @@
    "label": "End Date"
   },
   {
-   "fieldname": "column_break_1",
-   "fieldtype": "Column Break"
+   "fieldname": "pay_period",
+   "fieldtype": "Link",
+   "label": "Period",
+   "options": "Payroll Period"
   },
   {
-   "fieldname": "pay_period",
-   "fieldtype": "Data",
-   "label": "Period"
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "employment_type",
+   "fieldtype": "Link",
+   "label": "Employment Type",
+   "options": "Employment Type"
   },
   {
    "default": "0",
@@ -53,17 +64,31 @@
    "fieldtype": "Table",
    "label": "Attendance Line",
    "options": "Pay Attendance Line"
+  },
+  {
+   "fieldname": "column_break_ebwy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Pay Attendance List",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-05-14 09:10:38.000000",
+ "modified": "2026-05-26 11:11:52.466569",
  "modified_by": "Administrator",
  "module": "Be Pay",
  "name": "Pay Attendance List",
- "naming_rule": "Expression",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {

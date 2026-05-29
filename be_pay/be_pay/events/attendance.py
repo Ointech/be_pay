@@ -73,3 +73,21 @@ def before_save(doc, method=None):
 
     #frappe.throw(f"Date Presence == {current_date}")
 
+
+def on_submit(doc, method=None):
+    """
+    Après soumission de l'Attendance : synchronise automatiquement
+    le Pay Attendance List actif pour cet employé.
+    """
+    from be_pay.overrides.attendance_sync import sync_attendance_to_pay_list
+    sync_attendance_to_pay_list(doc, method)
+
+
+def on_cancel(doc, method=None):
+    """
+    Après annulation de l'Attendance : resynchronise le Pay Attendance List
+    pour retirer ou mettre à jour les heures de cet employé.
+    """
+    from be_pay.overrides.attendance_sync import sync_attendance_to_pay_list
+    sync_attendance_to_pay_list(doc, method)
+
